@@ -5,7 +5,9 @@ sys.stdin = open("sample_input.txt", "r")
 dy = [-1, 1, 0, 0]
 dx = [0, 0, -1, 1]
 
-types = 
+types = {
+    
+}
 
 def bfs(R, C):
     q = deque([R, C])
