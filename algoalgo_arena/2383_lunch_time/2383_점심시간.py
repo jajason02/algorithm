@@ -1,12 +1,10 @@
 """
-나의 생각: 각각의 계단으로 들어가는 사람들을 재귀로 조합을 나누고, 
+나의 생각: 각각의 계단으로 들어가는 사람들을 재귀로 조합을 나누고,
 각 조합마다 계단을 모두 내려가는 경우를 구현하여 시뮬레이션을 돌린다
 AI 도움: 계단을 내려가는데 걸리는 시간만 있으면 구현할 수 있다.
 사람의 개인의 인덱스는 넣을 필요가 없다.
 while 탈출 조건은 다 내려온 사람 수를 세어 리스트 길이와 같아질 때
 """
-
-
 
 import sys
 from collections import deque
@@ -44,8 +42,7 @@ def solve():
 
     stair_1.sort()
     stair_2.sort()
-    print(stair_1)
-    
+
     def finish_time(arrival, stair_length):
         if not arrival:
             return 0
