@@ -1,0 +1,86 @@
+"""
+나의 생각: 이건 무적권 dfs다 약을 A, B로 넣는 것과 약품 안 넣는 것으로 나눠서 dfs 조진다
+AI 아이디어: 성능 검사 여부를 따로 함수로 만들어라. 그리고 함수 매개변수 필요없음
+"""
+
+
+
+# import sys
+
+# sys.stdin = open("sample_input.txt", "r")
+
+
+# 성능 검사 통과 여부 함수
+def check_pass():
+    # 각각의 열에서 탐색
+    for j in range(W):
+        cnt = 1
+        is_pass = False
+        # K가 1인 경우 무조건 통과이므로 예외 처리
+        if K == 1:
+            cnt
+        # 행을 내려가면서 같은 특성이 나오는지 체크 
+        for i in range(1, D):
+            if matrix[i][j] == matrix[i-1][j]:
+                cnt += 1
+            else:
+                cnt = 1
+            # 같은 특성이 K번 이상 나오면 패스
+            if cnt >= K:
+                is_pass = True
+                break
+        
+        # 단 하나의 열이라도 통과하지 못하면 전체 검사 실패
+        if not is_pass:
+            return False
+    return True
+
+
+# depth: 현재 보호필름의 층 인덱스
+# count: 현재까지 투입된 약품 횟수
+def dfs(depth, count):
+    global min_count
+    
+    # 현재 투입 횟수가 이미 발견된 최솟값보다 크거나 같으면 탐색 중단 (가지치기)
+    if count >= min_count:
+        return
+
+    # 모든 층에 대한 결정을 완료한 경우 성능 검사 실시
+    if depth == D:
+        if check_pass():
+            min_count = min(min_count, count)
+        return
+
+    # 1. 약품을 투입하지 않는 경우
+    dfs(depth + 1, count)
+
+    # 기존 행의 상태를 백업 (복구 용도)
+    temp = matrix[depth][:]
+
+    # 2. A타입 약품 투입 (0으로 초기화)
+    matrix[depth] = [0] * W
+    dfs(depth + 1, count + 1)
+
+    # 3. B타입 약품 투입 (1로 초기화)
+    matrix[depth] = [1] * W
+    dfs(depth + 1, count + 1)
+
+    # 백트래킹: 원상 복구
+    matrix[depth] = temp
+
+
+T = int(input())
+
+
+for tc in range(1, T + 1):
+    D, W, K = map(int, input().split())
+    matrix = [list(map(int, input().split())) for _ in range(D)]
+    
+    min_count = K  # 최악의 경우 K번 투입하면 무조건 통과 가능
+
+    # 성능 검사가 이미 통과 상태라면 0 출력, 아니면 DFS 탐색
+    if K == 1 or check_pass():
+        print(f"#{tc} 0")
+    else:
+        dfs(0, 0)
+        print(f"#{tc} {min_count}")
