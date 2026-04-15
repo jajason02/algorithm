@@ -11,3 +11,4 @@ for tc in range(1, T+1):
         graph[x].append(y)
         graph[y].append(x)
     print(graph)
+    
