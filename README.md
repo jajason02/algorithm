@@ -7,7 +7,7 @@ Python으로 작성하며, 꾸준한 풀이와 기록을 목표로 합니다.
 
 ---
 
-## 목표
+## Goals
 
 - [ ] SWEA B형 취득
 - [x] 주기적 풀이 습관 형성
@@ -15,17 +15,19 @@ Python으로 작성하며, 꾸준한 풀이와 기록을 목표로 합니다.
 
 ---
 
-## 문제 풀이 현황 — 총 78문제
+## Problems &nbsp; <sub>total 78</sub>
 
-### [Baekjoon](https://github.com/jajason02/algorithm/tree/master/baekjoon) &nbsp; <sub>2문제</sub>
+[Baekjoon](#baekjoon) &nbsp;·&nbsp; 2 problems &nbsp;|&nbsp; [SWEA](#swea) &nbsp;·&nbsp; 61 problems &nbsp;|&nbsp; [Programmers](#programmers) &nbsp;·&nbsp; 2 problems &nbsp;|&nbsp; [AlgoAlgo](#algoalgo) &nbsp;·&nbsp; 13 problems
 
-| 번호 | 제목 | &nbsp; | 번호 | 제목 |
+### Baekjoon &nbsp; <sub>2 problems</sub>
+
+| # | Title | &nbsp; | # | Title |
 |:---:|:---|:---:|:---:|:---|
 | [14567](https://www.acmicpc.net/problem/14567) | [선수과목](baekjoon/2603/14567_prerequisite/14567_선수과목.py) | &nbsp; | [17472](https://www.acmicpc.net/problem/17472) | [다리만들기2](baekjoon/2603/17472_build_bridge/17472_다리만들기2.py) |
 
-### [SWEA](https://github.com/jajason02/algorithm/tree/master/SWEA) &nbsp; <sub>61문제</sub>
+### SWEA &nbsp; <sub>61 problems</sub>
 
-| 번호 | 제목 | &nbsp; | 번호 | 제목 |
+| # | Title | &nbsp; | # | Title |
 |:---:|:---|:---:|:---:|:---|
 | 1949 | [등산로조성](SWEA/advanced/2602/1949_trekking_route/1949_등산로조성.py) | &nbsp; | 1953 | [탈주범검거](SWEA/advanced/2602/1953_escape/1953_탈주범검거.py) |
 | 2105 | [디저트카페](SWEA/advanced/2602/2105_dessert/2105_디저트카페.py) | &nbsp; | 2383 | [점심식사시간](SWEA/advanced/2602/2383_lunch_time/2383_점심식사시간.py) |
@@ -59,15 +61,15 @@ Python으로 작성하며, 꾸준한 풀이와 기록을 목표로 합니다.
 | 5248 | [그룹만들기](SWEA/assignment/2604/5248_groupping/5248_그룹만들기.py) | &nbsp; | 5248 | [그룹나누기](SWEA/assignment/2604/5248_separate_group/5248_그룹나누기.py) |
 | 5251 | [최소이동거리](SWEA/assignment/2604/5251_min_distance/5251_최소이동거리.py) | &nbsp; | &nbsp; | &nbsp; |
 
-### [Programmers](https://github.com/jajason02/algorithm/tree/master/programmers) &nbsp; <sub>2문제</sub>
+### Programmers &nbsp; <sub>2 problems</sub>
 
-| 제목 | &nbsp; | 제목 |
+| Title | &nbsp; | Title |
 |:---|:---:|:---|
 | [베스트앨범](programmers/2604/best_album/베스트앨범.py) | &nbsp; | [여행경로](programmers/2604/travel_route/여행경로.py) |
 
-### [AlgoAlgo 스터디](https://github.com/jajason02/algorithm/tree/master/algoalgo_arena) &nbsp; <sub>13문제</sub>
+### AlgoAlgo &nbsp; <sub>13 problems</sub>
 
-| 제목 | &nbsp; | 제목 |
+| Title | &nbsp; | Title |
 |:---|:---:|:---|
 | [1949 등산로조성](algoalgo_arena/2603/1949_hiking_route/1949_등산로조성.py) | &nbsp; | [1952 수영장](algoalgo_arena/2603/1952_swimming_pool/1952_수영장.py) |
 | [2105 디저트카페](algoalgo_arena/2603/2105_dessert_cafe/2105_디저트카페.py) | &nbsp; | [2117 홈방범서비스](algoalgo_arena/2603/2117_home_security/2117_홈방범서비스.py) |

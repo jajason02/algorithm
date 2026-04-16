@@ -2,9 +2,9 @@
 Algorithm 리포지토리 README 자동 생성 스크립트
 
 파일명 규칙:
-  baekjoon/    → 2603_색종이.py       (번호_제목.py)
-  programmers/ → 두_개_뽑아서_더하기.py (제목.py, 번호 없음)
-  SWEA/        → 1234_파리퇴치.py      (번호_제목.py)
+  baekjoon/       → 2603_색종이.py    (번호_제목.py)
+  programmers/    → 두개뽑아서.py     (제목.py, 번호 없음)
+  SWEA/           → 1234_파리퇴치.py  (번호_제목.py)
   algoalgo_arena/ → 임의 파일명 허용
 
 실행: python .github/scripts/generate_readme.py
@@ -20,35 +20,33 @@ PLATFORMS = {
         'name': 'Baekjoon',
         'has_number': True,
         'problem_url': 'https://www.acmicpc.net/problem/{}',
-        'repo_url': 'https://github.com/jajason02/algorithm/tree/master/baekjoon',
     },
     'SWEA': {
         'name': 'SWEA',
         'has_number': True,
         'problem_url': '',
-        'repo_url': 'https://github.com/jajason02/algorithm/tree/master/SWEA',
     },
     'programmers': {
         'name': 'Programmers',
         'has_number': False,
         'problem_url': '',
-        'repo_url': 'https://github.com/jajason02/algorithm/tree/master/programmers',
     },
     'algoalgo_arena': {
-        'name': 'AlgoAlgo 스터디',
+        'name': 'AlgoAlgo',
         'has_number': False,
         'problem_url': '',
-        'repo_url': 'https://github.com/jajason02/algorithm/tree/master/algoalgo_arena',
     },
 }
 
+# GitHub 마크다운 앵커: 헤더 텍스트 소문자 + 공백→- + 특수문자 제거
+def to_anchor(text: str) -> str:
+    text = text.lower().strip()
+    text = re.sub(r'[^\w\s-]', '', text)
+    text = re.sub(r'\s+', '-', text)
+    return text
+
 
 def parse_filename(stem: str, has_number: bool) -> tuple[str, str]:
-    """
-    파일명에서 (번호, 제목) 파싱.
-    번호_제목 형식이면 분리, 아니면 전체를 제목으로.
-    띄어쓰기는 _ 또는 공백 모두 허용.
-    """
     if has_number:
         match = re.match(r'^(\d+)[_\-\s](.+)$', stem)
         if match:
@@ -90,7 +88,6 @@ def collect_concepts() -> list:
 
 
 def make_table(problems: list, meta: dict) -> list:
-    """2열 레이아웃 마크다운 표. 제목에 풀이 링크 포함."""
     has_number = meta['has_number']
     url_tpl    = meta.get('problem_url', '')
 
@@ -105,10 +102,10 @@ def make_table(problems: list, meta: dict) -> list:
 
     lines = []
     if has_number:
-        lines.append('| 번호 | 제목 | &nbsp; | 번호 | 제목 |')
+        lines.append('| # | Title | &nbsp; | # | Title |')
         lines.append('|:---:|:---|:---:|:---:|:---|')
     else:
-        lines.append('| 제목 | &nbsp; | 제목 |')
+        lines.append('| Title | &nbsp; | Title |')
         lines.append('|:---|:---:|:---|')
 
     for i in range(0, len(problems), 2):
@@ -132,34 +129,48 @@ def make_table(problems: list, meta: dict) -> list:
 def render(all_problems: dict, concepts: list) -> str:
     total = sum(len(v) for v in all_problems.values())
 
+    # 실제로 문제가 있는 플랫폼만
+    active = [(p, m) for p, m in PLATFORMS.items() if all_problems.get(p)]
+
+    # TOC 빌드
+    toc_lines = []
+    for platform, meta in active:
+        count  = len(all_problems[platform])
+        anchor = to_anchor(meta['name'])
+        toc_lines.append(f'[{meta["name"]}](#{anchor}) &nbsp;·&nbsp; {count} problems')
+    if concepts:
+        anchor = to_anchor('concepts')
+        toc_lines.append(f'[Concepts](#{anchor}) &nbsp;·&nbsp; {len(concepts)} topics')
+
     lines = [
         '# Algorithm\n',
         '알고리즘 문제 풀이 및 개념 정리 저장소입니다.  ',
         'Python으로 작성하며, 꾸준한 풀이와 기록을 목표로 합니다.\n',
         '![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)\n',
         '---\n',
-        '## 목표\n',
+        '## Goals\n',
         '- [ ] SWEA B형 취득',
         '- [x] 주기적 풀이 습관 형성',
         '- [ ] 주요 알고리즘 개념 전체 정리\n',
         '---\n',
-        f'## 문제 풀이 현황 — 총 {total}문제\n',
+        f'## Problems &nbsp; <sub>total {total}</sub>\n',
     ]
 
-    for platform, meta in PLATFORMS.items():
-        problems = all_problems.get(platform, [])
-        if not problems:
-            continue
+    # TOC
+    lines.append(' &nbsp;|&nbsp; '.join(toc_lines) + '\n')
 
-        name_link = f'[{meta["name"]}]({meta["repo_url"]})'
-        lines.append(f'### {name_link} &nbsp; <sub>{len(problems)}문제</sub>\n')
+    # 각 플랫폼 섹션 (링크 없는 순수 헤더)
+    for platform, meta in active:
+        problems = all_problems[platform]
+        count    = len(problems)
+        lines.append(f'### {meta["name"]} &nbsp; <sub>{count} problems</sub>\n')
         lines.extend(make_table(problems, meta))
         lines.append('')
 
     if concepts:
         lines.append('---\n')
-        lines.append('## 개념 정리\n')
-        lines.append('| 주제 | 링크 |')
+        lines.append(f'### Concepts &nbsp; <sub>{len(concepts)} topics</sub>\n')
+        lines.append('| Topic | Link |')
         lines.append('|:---|:---:|')
         for c in concepts:
             lines.append(f'| {c["name"]} | [→]({c["path"]}) |')
@@ -187,4 +198,4 @@ if __name__ == '__main__':
         f.write(readme)
 
     total = sum(len(v) for v in all_problems.values())
-    print(f'README.md 업데이트 완료 — 총 {total}문제, 개념 {len(concepts)}개')
+    print(f'Done — {total} problems, {len(concepts)} concepts')
