@@ -5,7 +5,7 @@ Algorithm 리포지토리 README 자동 생성 스크립트
   baekjoon/    → 2603_색종이.py       (번호_제목.py)
   programmers/ → 두_개_뽑아서_더하기.py (제목.py, 번호 없음)
   SWEA/        → 1234_파리퇴치.py      (번호_제목.py)
-  algoalgo_arena/ → 임의 파일명 허용
+  algoalgo_arena/ → 2603_색종이.py       (번호_제목.py)
 
 실행: python .github/scripts/generate_readme.py
 """
@@ -24,7 +24,7 @@ PLATFORMS = {
     'SWEA': {
         'name': 'SWEA',
         'has_number': True,
-        'problem_url': '',  # SWEA는 URL 구조가 복잡해서 생략
+        'problem_url': '',
     },
     'programmers': {
         'name': 'Programmers',
@@ -33,51 +33,36 @@ PLATFORMS = {
     },
     'algoalgo_arena': {
         'name': 'AlgoAlgo 스터디',
-        'has_number': False,
+        'has_number': True,
         'problem_url': '',
     },
 }
 
 
 def parse_filename(stem: str, has_number: bool) -> tuple[str, str]:
-    """
-    파일명(확장자 제외)에서 (번호, 제목) 파싱.
-
-    has_number=True  → '2603_색종이'    → ('2603', '색종이')
-    has_number=False → '두_개_뽑아서'   → ('', '두 개 뽑아서')
-    """
     if has_number:
         match = re.match(r'^(\d+)[_\-\s](.+)$', stem)
         if match:
-            number = match.group(1)
-            title = match.group(2).replace('_', ' ')
-            return number, title
-        # 번호만 있는 경우 (제목 없음)
+            return match.group(1), match.group(2).replace('_', ' ')
         if stem.isdigit():
             return stem, ''
-    # 번호 없는 경우 or 파싱 실패
-    title = stem.replace('_', ' ')
-    return '', title
+    return '', stem.replace('_', ' ')
 
 
 def collect(platform: str, meta: dict) -> list:
     folder = ROOT / platform
     if not folder.exists():
         return []
-
     results = []
     for py_file in sorted(folder.rglob('*.py')):
-        # __init__.py 등 제외
         if py_file.stem.startswith('__'):
             continue
-
         number, title = parse_filename(py_file.stem, meta['has_number'])
         results.append({
             'number': number,
             'title':  title,
             'path':   py_file.relative_to(ROOT),
         })
-
     return results
 
 
@@ -89,6 +74,58 @@ def collect_concepts() -> list:
         {'name': f.stem.replace('_', ' '), 'path': f.relative_to(ROOT)}
         for f in sorted(folder.glob('*.md'))
         if f.name != 'README.md'
+    ]
+
+
+def make_two_column_table(problems: list, meta: dict) -> list:
+    """문제 목록을 2열 마크다운 표로 변환. 제목에 풀이 링크 포함."""
+    has_number = meta['has_number']
+    url_tpl    = meta.get('problem_url', '')
+
+    def num_cell(p):
+        if not p['number']:
+            return ''
+        return f'[{p["number"]}]({url_tpl.format(p["number"])})' if url_tpl else p['number']
+
+    def title_cell(p):
+        title = p['title'] if p['title'] else p['number'] if p['number'] else '-'
+        return f'[{title}]({p["path"]})'
+
+    lines = []
+    if has_number:
+        lines.append('| 번호 | 제목 | &nbsp;&nbsp;&nbsp; | 번호 | 제목 |')
+        lines.append('|:---:|:---|---|:---:|:---|')
+    else:
+        lines.append('| 제목 | &nbsp;&nbsp;&nbsp; | 제목 |')
+        lines.append('|:---|---|:---|')
+
+    for i in range(0, len(problems), 2):
+        left  = problems[i]
+        right = problems[i + 1] if i + 1 < len(problems) else None
+
+        if has_number:
+            ln = num_cell(left)
+            lt = title_cell(left)
+            rn = num_cell(right)   if right else ''
+            rt = title_cell(right) if right else ''
+            lines.append(f'| {ln} | {lt} | | {rn} | {rt} |')
+        else:
+            lt = title_cell(left)
+            rt = title_cell(right) if right else ''
+            lines.append(f'| {lt} | | {rt} |')
+
+    return lines
+
+
+def make_collapsible(summary: str, content_lines: list) -> list:
+    return [
+        '<details>',
+        f'<summary>{summary}</summary>',
+        '',
+        *content_lines,
+        '',
+        '</details>',
+        '',
     ]
 
 
@@ -105,7 +142,7 @@ def render(all_problems: dict, concepts: list) -> str:
         '---\n',
         '## 목표\n',
         '- [ ] SWEA B형 취득',
-        '- [x] 백준 일관적 풀이 습관 형성',
+        '- [x] 주기적 풀이 습관 형성',
         '- [ ] 주요 알고리즘 개념 전체 정리\n',
         '---\n',
         f'## 문제 풀이 현황 — 총 {total}문제\n',
@@ -115,45 +152,40 @@ def render(all_problems: dict, concepts: list) -> str:
         problems = all_problems.get(platform, [])
         if not problems:
             continue
-
-        lines.append(f'### {meta["name"]} ({len(problems)})\n')
-
-        if meta['has_number']:
-            lines.append('| 번호 | 제목 | 풀이 |')
-            lines.append('|:---:|:---|:---:|')
-            for p in problems:
-                url = meta['problem_url'].format(p['number']) if meta['problem_url'] and p['number'] else ''
-                num_str = f'[{p["number"]}]({url})' if url else p['number']
-                title_str = p['title'] if p['title'] else '-'
-                lines.append(f'| {num_str} | {title_str} | [풀이]({p["path"]}) |')
-        else:
-            lines.append('| 제목 | 풀이 |')
-            lines.append('|:---|:---:|')
-            for p in problems:
-                title_str = p['title'] if p['title'] else p['path'].stem
-                lines.append(f'| {title_str} | [풀이]({p["path"]}) |')
-
-        lines.append('')
+        table  = make_two_column_table(problems, meta)
+        summary = f'📂 {meta["name"]} &nbsp;·&nbsp; {len(problems)}문제'
+        lines.extend(make_collapsible(summary, table))
 
     if concepts:
         lines.append('---\n')
-        lines.append(f'## 개념 정리 ({len(concepts)})\n')
-        lines.append('| 주제 | 링크 |')
-        lines.append('|:---|:---:|')
-        for c in concepts:
-            lines.append(f'| {c["name"]} | [정리]({c["path"]}) |')
-        lines.append('')
+        lines.append('## 개념 정리\n')
+        concept_lines = [
+            '| 주제 | 링크 |',
+            '|:---|:---:|',
+            *[f'| {c["name"]} | [정리]({c["path"]}) |' for c in concepts],
+        ]
+        lines.extend(make_collapsible(
+            f'📖 개념 정리 &nbsp;·&nbsp; {len(concepts)}개',
+            concept_lines,
+        ))
 
-    lines.append('---\n')
-    lines.append('<p align="right"><em>"가독성 우선, 효율성 체크, 기록의 힘"</em></p>\n')
+    lines += [
+        '---\n',
+        '## Best Practice\n',
+        '1. **가독성 우선** — PEP 8 지키기  (클래스: PascalCase)  (함수, 변수: snake_case)  (상수: SNAKE_CASE)',
+        '2. **효율성 체크** — 시간복잡도 O(N)을 항상 계산하고 제출',
+        '3. **기록의 힘** — 어떻게 풀이를 시작했는지, 왜 이 알고리즘을 선택했는지, ai의 도움을 어떻게 받았는지 주석으로 생각의 흐름 남기기\n',
+        '---\n',
+
+    ]
 
     return '\n'.join(lines) + '\n'
 
 
 if __name__ == '__main__':
     all_problems = {p: collect(p, m) for p, m in PLATFORMS.items()}
-    concepts = collect_concepts()
-    readme = render(all_problems, concepts)
+    concepts     = collect_concepts()
+    readme       = render(all_problems, concepts)
 
     with open(ROOT / 'README.md', 'w', encoding='utf-8') as f:
         f.write(readme)
