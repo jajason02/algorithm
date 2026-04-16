@@ -1,44 +1,26 @@
 """
-Algorithm 리포지토리 README 자동 생성 스크립트
-
-파일명 규칙:
-  baekjoon/       → 2603_색종이.py    (번호_제목.py)
-  programmers/    → 두개뽑아서.py     (제목.py, 번호 없음)
-  SWEA/           → 1234_파리퇴치.py  (번호_제목.py)
-  algoalgo_arena/ → 임의 파일명 허용
-
-실행: python .github/scripts/generate_readme.py
+TIL README 자동 생성 스크립트
+til/ 하위 폴더를 스캔해서 README.md 목록을 자동으로 업데이트합니다.
 """
 
 import re
 from pathlib import Path
+from datetime import datetime
+
+IGNORE = {'.github', 'README.md', 'TEMPLATE.md', '.git'}
+
+CATEGORY_NAMES = {
+    'python':    'Python',
+    'django':    'Django',
+    'ai':        'AI / ML',
+    'web':       'Web',
+    'algorithm': 'Algorithm',
+    'etc':       'ETC',
+}
 
 ROOT = Path(__file__).parent.parent.parent
 
-PLATFORMS = {
-    'baekjoon': {
-        'name': 'Baekjoon',
-        'has_number': True,
-        'problem_url': 'https://www.acmicpc.net/problem/{}',
-    },
-    'SWEA': {
-        'name': 'SWEA',
-        'has_number': True,
-        'problem_url': '',
-    },
-    'programmers': {
-        'name': 'Programmers',
-        'has_number': False,
-        'problem_url': '',
-    },
-    'algoalgo_arena': {
-        'name': 'AlgoAlgo',
-        'has_number': False,
-        'problem_url': '',
-    },
-}
 
-# GitHub 마크다운 앵커: 헤더 텍스트 소문자 + 공백→- + 특수문자 제거
 def to_anchor(text: str) -> str:
     text = text.lower().strip()
     text = re.sub(r'[^\w\s-]', '', text)
@@ -46,142 +28,102 @@ def to_anchor(text: str) -> str:
     return text
 
 
-def parse_filename(stem: str, has_number: bool) -> tuple[str, str]:
-    if has_number:
-        match = re.match(r'^(\d+)[_\-\s](.+)$', stem)
-        if match:
-            return match.group(1), match.group(2).replace('_', ' ')
-        if stem.isdigit():
-            return stem, ''
-    return '', stem.replace('_', ' ')
+def get_title(filepath: Path) -> str:
+    try:
+        with open(filepath, encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if line.startswith('# '):
+                    return line[2:].strip()
+    except Exception:
+        pass
+    return filepath.stem.replace('-', ' ').replace('_', ' ').title()
 
 
-def collect(platform: str, meta: dict) -> list:
-    folder = ROOT / platform
-    if not folder.exists():
-        return []
-    results = []
-    for py_file in sorted(folder.rglob('*.py')):
-        if py_file.stem.startswith('__'):
+def get_date(filepath: Path) -> str:
+    try:
+        with open(filepath, encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if line.startswith('> ') and len(line) >= 12:
+                    candidate = line[2:12]
+                    try:
+                        datetime.strptime(candidate, '%Y-%m-%d')
+                        return candidate
+                    except ValueError:
+                        pass
+    except Exception:
+        pass
+    return ''
+
+
+def collect() -> dict:
+    data = {}
+    for category in sorted(ROOT.iterdir()):
+        if category.name in IGNORE or not category.is_dir():
             continue
-        number, title = parse_filename(py_file.stem, meta['has_number'])
-        results.append({
-            'number': number,
-            'title':  title,
-            'path':   py_file.relative_to(ROOT).as_posix(),
-        })
-    return results
+        files = sorted(category.glob('*.md'), reverse=True)
+        if not files:
+            continue
+        data[category.name] = [
+            {
+                'title': get_title(f),
+                'date':  get_date(f),
+                'path':  f.relative_to(ROOT).as_posix(),
+            }
+            for f in files
+        ]
+    return data
 
 
-def collect_concepts() -> list:
-    folder = ROOT / 'Concepts'
-    if not folder.exists():
-        return []
-    return [
-        {
-            'name': f.stem.replace('_', ' '),
-            'path': f.relative_to(ROOT).as_posix(),
-        }
-        for f in sorted(folder.glob('*.md'))
-        if f.name != 'README.md'
+def render(data: dict) -> str:
+    total = sum(len(v) for v in data.values())
+
+    all_dates = [
+        e['date']
+        for entries in data.values()
+        for e in entries
+        if e['date']
     ]
+    latest = max(all_dates) if all_dates else '-'
 
-
-def make_table(problems: list, meta: dict) -> list:
-    has_number = meta['has_number']
-    url_tpl    = meta.get('problem_url', '')
-
-    def num_cell(p):
-        if not p['number']:
-            return '&nbsp;'
-        return f'[{p["number"]}]({url_tpl.format(p["number"])})' if url_tpl else p['number']
-
-    def title_cell(p):
-        label = p['title'] if p['title'] else (p['number'] if p['number'] else '-')
-        return f'[{label}]({p["path"]})'
-
-    lines = []
-    if has_number:
-        lines.append('| # | Title | &nbsp; | # | Title |')
-        lines.append('|:---:|:---|:---:|:---:|:---|')
-    else:
-        lines.append('| Title | &nbsp; | Title |')
-        lines.append('|:---|:---:|:---|')
-
-    for i in range(0, len(problems), 2):
-        left  = problems[i]
-        right = problems[i + 1] if i + 1 < len(problems) else None
-
-        if has_number:
-            ln = num_cell(left)
-            lt = title_cell(left)
-            rn = num_cell(right)   if right else '&nbsp;'
-            rt = title_cell(right) if right else '&nbsp;'
-            lines.append(f'| {ln} | {lt} | &nbsp; | {rn} | {rt} |')
-        else:
-            lt = title_cell(left)
-            rt = title_cell(right) if right else '&nbsp;'
-            lines.append(f'| {lt} | &nbsp; | {rt} |')
-
-    return lines
-
-
-def render(all_problems: dict, concepts: list) -> str:
-    total = sum(len(v) for v in all_problems.values())
-
-    # 실제로 문제가 있는 플랫폼만
-    active = [(p, m) for p, m in PLATFORMS.items() if all_problems.get(p)]
-
-    # TOC 빌드
-    toc_lines = []
-    for platform, meta in active:
-        count  = len(all_problems[platform])
-        anchor = to_anchor(meta['name'])
-        toc_lines.append(f'[{meta["name"]}](#{anchor}) &nbsp;·&nbsp; {count} problems')
-    if concepts:
-        anchor = to_anchor('concepts')
-        toc_lines.append(f'[Concepts](#{anchor}) &nbsp;·&nbsp; {len(concepts)} topics')
-
+    # Stats 표
     lines = [
-        '# Algorithm\n',
-        '알고리즘 문제 풀이 및 개념 정리 저장소입니다.  ',
-        'Python으로 작성하며, 꾸준한 풀이와 기록을 목표로 합니다.\n',
-        '![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)\n',
+        '# TIL — Today I Learned\n',
+        '공부하면서 배운 것들을 간단히 기록합니다.  ',
+        '코드 스니펫, 개념 정리, 막혔던 것과 해결 방법 위주로 남깁니다.\n',
         '---\n',
-        '## Goals\n',
-        '- [ ] SWEA B형 취득',
-        '- [x] 주기적 풀이 습관 형성',
-        '- [ ] 주요 알고리즘 개념 전체 정리\n',
+        f'Total **{total}** &nbsp;·&nbsp; Categories **{len(data)}** &nbsp;·&nbsp; Last updated **{latest}**\n',
         '---\n',
-        f'## Problems &nbsp; <sub>total {total}</sub>\n',
     ]
 
-    # TOC
-    lines.append(' &nbsp;|&nbsp; '.join(toc_lines) + '\n')
+    # TOC — 한 줄로
+    toc_parts = []
+    for cat, entries in data.items():
+        display = CATEGORY_NAMES.get(cat, cat.title())
+        anchor  = to_anchor(display)
+        toc_parts.append(f'[{display}](#{anchor}) &nbsp;·&nbsp; {len(entries)}')
+    lines.append(' &nbsp;|&nbsp; '.join(toc_parts) + '\n')
 
-    # 각 플랫폼 섹션 (링크 없는 순수 헤더)
-    for platform, meta in active:
-        problems = all_problems[platform]
-        count    = len(problems)
-        lines.append(f'### {meta["name"]} &nbsp; <sub>{count} problems</sub>\n')
-        lines.extend(make_table(problems, meta))
-        lines.append('')
+    # 카테고리별 섹션 (링크 없는 순수 헤더)
+    for cat, entries in data.items():
+        display = CATEGORY_NAMES.get(cat, cat.title())
 
-    if concepts:
-        lines.append('---\n')
-        lines.append(f'### Concepts &nbsp; <sub>{len(concepts)} topics</sub>\n')
-        lines.append('| Topic | Link |')
-        lines.append('|:---|:---:|')
-        for c in concepts:
-            lines.append(f'| {c["name"]} | [→]({c["path"]}) |')
+        lines.append(f'## {display} &nbsp; <sub>{len(entries)} notes</sub>\n')
+        lines.append('| Title | Date |')
+        lines.append('|:---|:---|')
+        for e in entries:
+            date_str = e['date'] if e['date'] else '-'
+            lines.append(f'| [{e["title"]}]({e["path"]}) | {date_str} |')
         lines.append('')
 
     lines += [
         '---\n',
-        '## Best Practice\n',
-        '1. **가독성 우선** — PEP 8 지키기 (클래스: PascalCase / 함수·변수: snake_case / 상수: SNAKE_CASE)',
-        '2. **효율성 체크** — 시간복잡도 O(N)을 항상 계산하고 제출',
-        '3. **기록의 힘** — 어떻게 풀이를 시작했는지, 왜 이 알고리즘을 선택했는지, AI의 도움을 어떻게 받았는지 주석으로 생각의 흐름 남기기\n',
+        '## Writing Guide\n',
+        '- 파일명: `주제-요약.md` (예: `bfs-shortest-path.md`)',
+        '- 날짜: 파일 상단 `> YYYY-MM-DD` 형식',
+        '- 구성: **배운 것** / **막혔던 것·해결** / **참고**',
+        '- 새 카테고리 폴더를 만들면 자동으로 README에 반영됨\n',
         '---\n',
         '<p align="right"><em>"가독성 우선, 효율성 체크, 기록의 힘"</em></p>\n',
     ]
@@ -190,12 +132,10 @@ def render(all_problems: dict, concepts: list) -> str:
 
 
 if __name__ == '__main__':
-    all_problems = {p: collect(p, m) for p, m in PLATFORMS.items()}
-    concepts     = collect_concepts()
-    readme       = render(all_problems, concepts)
+    data   = collect()
+    readme = render(data)
 
     with open(ROOT / 'README.md', 'w', encoding='utf-8') as f:
         f.write(readme)
 
-    total = sum(len(v) for v in all_problems.values())
-    print(f'Done — {total} problems, {len(concepts)} concepts')
+    print(f'Done — {sum(len(v) for v in data.values())} notes')
