@@ -19,13 +19,17 @@ Python으로 작성하며, 꾸준한 풀이와 기록을 목표로 합니다.
 
 [Baekjoon](#baekjoon) &nbsp;·&nbsp; 2 problems &nbsp;|&nbsp; [SWEA](#swea) &nbsp;·&nbsp; 61 problems &nbsp;|&nbsp; [Programmers](#programmers) &nbsp;·&nbsp; 2 problems &nbsp;|&nbsp; [AlgoAlgo](#algoalgo) &nbsp;·&nbsp; 13 problems
 
-### Baekjoon &nbsp; <sub>2 problems</sub>
+### Baekjoon
+
+<sub>2 problems</sub>
 
 | # | Title | &nbsp; | # | Title |
 |:---:|:---|:---:|:---:|:---|
 | [14567](https://www.acmicpc.net/problem/14567) | [선수과목](baekjoon/2603/14567_prerequisite/14567_선수과목.py) | &nbsp; | [17472](https://www.acmicpc.net/problem/17472) | [다리만들기2](baekjoon/2603/17472_build_bridge/17472_다리만들기2.py) |
 
-### SWEA &nbsp; <sub>61 problems</sub>
+### SWEA
+
+<sub>61 problems</sub>
 
 | # | Title | &nbsp; | # | Title |
 |:---:|:---|:---:|:---:|:---|
@@ -61,13 +65,17 @@ Python으로 작성하며, 꾸준한 풀이와 기록을 목표로 합니다.
 | 5248 | [그룹만들기](SWEA/assignment/2604/5248_groupping/5248_그룹만들기.py) | &nbsp; | 5248 | [그룹나누기](SWEA/assignment/2604/5248_separate_group/5248_그룹나누기.py) |
 | 5251 | [최소이동거리](SWEA/assignment/2604/5251_min_distance/5251_최소이동거리.py) | &nbsp; | &nbsp; | &nbsp; |
 
-### Programmers &nbsp; <sub>2 problems</sub>
+### Programmers
+
+<sub>2 problems</sub>
 
 | Title | &nbsp; | Title |
 |:---|:---:|:---|
 | [베스트앨범](programmers/2604/best_album/베스트앨범.py) | &nbsp; | [여행경로](programmers/2604/travel_route/여행경로.py) |
 
-### AlgoAlgo &nbsp; <sub>13 problems</sub>
+### AlgoAlgo
+
+<sub>13 problems</sub>
 
 | Title | &nbsp; | Title |
 |:---|:---:|:---|
