@@ -15,9 +15,9 @@ Python으로 작성하며, 꾸준한 풀이와 기록을 목표로 합니다.
 
 ---
 
-## Problems &nbsp; <sub>total 78</sub>
+## Problems &nbsp; <sub>total 80</sub>
 
-[Baekjoon](#baekjoon) &nbsp;·&nbsp; 2 problems &nbsp;|&nbsp; [SWEA](#swea) &nbsp;·&nbsp; 61 problems &nbsp;|&nbsp; [Programmers](#programmers) &nbsp;·&nbsp; 2 problems &nbsp;|&nbsp; [AlgoAlgo](#algoalgo) &nbsp;·&nbsp; 13 problems
+[Baekjoon](#baekjoon) &nbsp;·&nbsp; 2 problems &nbsp;|&nbsp; [SWEA](#swea) &nbsp;·&nbsp; 63 problems &nbsp;|&nbsp; [Programmers](#programmers) &nbsp;·&nbsp; 2 problems &nbsp;|&nbsp; [AlgoAlgo](#algoalgo) &nbsp;·&nbsp; 13 problems
 
 ### Baekjoon
 
@@ -29,7 +29,7 @@ Python으로 작성하며, 꾸준한 풀이와 기록을 목표로 합니다.
 
 ### SWEA
 
-<sub>61 problems</sub>
+<sub>63 problems</sub>
 
 | # | Title | &nbsp; | # | Title |
 |:---:|:---|:---:|:---:|:---|
@@ -39,6 +39,7 @@ Python으로 작성하며, 꾸준한 풀이와 기록을 목표로 합니다.
 | 5650 | [핀볼게임](SWEA/advanced/2602/5650_pinball_game/5650_핀볼게임.py) | &nbsp; | 1767 | [프로세서](SWEA/advanced/2603/1767_processor/1767_프로세서.py) |
 | 1952 | [수영장](SWEA/advanced/2603/1952_swiming_pool/1952_수영장.py) | &nbsp; | 2117 | [홈방범서비스](SWEA/advanced/2603/2117_home_security/2117_홈방범서비스.py) |
 | 2477 | [차량정비소](SWEA/advanced/2603/2477_car_center/2477_차량정비소.py) | &nbsp; | 5653 | [줄기세포분열](SWEA/advanced/2603/5653_cell_culture/5653_줄기세포분열.py) |
+| 1247 | [최적루트](SWEA/advanced/2604/1247_best_route/1247_최적루트.py) | &nbsp; | 2115 | [벌꿀채취](SWEA/advanced/2604/2115_honey_harvesting/2115_벌꿀채취.py) |
 | 2382 | [미생물격리](SWEA/advanced/2604/2382_microbe/2382_미생물격리.py) | &nbsp; | 5648 | [원자소멸시뮬](SWEA/advanced/2604/5648_atom_simulation/5648_원자소멸시뮬.py) |
 | &nbsp; | [arr sum](SWEA/assignment/2602/D3_array_sum/arr_sum.py) | &nbsp; | &nbsp; | [junco](SWEA/assignment/2602/D3_array_sum/junco.py) |
 | &nbsp; | [graph path](SWEA/assignment/2602/D3_graph_path_DFS/graph_path.py) | &nbsp; | &nbsp; | [graph practice](SWEA/assignment/2602/D3_graph_path_DFS/graph_practice.py) |
