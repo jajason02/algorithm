@@ -15,9 +15,9 @@ Python으로 작성하며, 꾸준한 풀이와 기록을 목표로 합니다.
 
 ---
 
-## Problems &nbsp; <sub>total 83</sub>
+## Problems &nbsp; <sub>total 86</sub>
 
-[Baekjoon](#baekjoon) &nbsp;·&nbsp; 2 problems &nbsp;|&nbsp; [SWEA](#swea) &nbsp;·&nbsp; 65 problems &nbsp;|&nbsp; [Programmers](#programmers) &nbsp;·&nbsp; 2 problems &nbsp;|&nbsp; [AlgoAlgo](#algoalgo) &nbsp;·&nbsp; 14 problems
+[Baekjoon](#baekjoon) &nbsp;·&nbsp; 2 problems &nbsp;|&nbsp; [SWEA](#swea) &nbsp;·&nbsp; 68 problems &nbsp;|&nbsp; [Programmers](#programmers) &nbsp;·&nbsp; 2 problems &nbsp;|&nbsp; [AlgoAlgo](#algoalgo) &nbsp;·&nbsp; 14 problems
 
 ### Baekjoon
 
@@ -29,7 +29,7 @@ Python으로 작성하며, 꾸준한 풀이와 기록을 목표로 합니다.
 
 ### SWEA
 
-<sub>65 problems</sub>
+<sub>68 problems</sub>
 
 | # | Title | &nbsp; | # | Title |
 |:---:|:---|:---:|:---:|:---|
@@ -65,7 +65,8 @@ Python으로 작성하며, 꾸준한 풀이와 기록을 목표로 합니다.
 | 22683 | [나무베기](SWEA/assignment/2604/22683_logging/22683_나무베기.py) | &nbsp; | 2814 | [최장경로](SWEA/assignment/2604/2814_longest_route/2814_최장경로.py) |
 | 5247 | [연산](SWEA/assignment/2604/5247_calculation/5247_연산.py) | &nbsp; | 5248 | [그룹만들기](SWEA/assignment/2604/5248_groupping/5248_그룹만들기.py) |
 | 5248 | [그룹나누기](SWEA/assignment/2604/5248_separate_group/5248_그룹나누기.py) | &nbsp; | 5251 | [최소이동거리](SWEA/assignment/2604/5251_min_distance/5251_최소이동거리.py) |
-| 1288 | [새로운불면증치료법](SWEA/professional/2604/1288_insomnia/1288_새로운불면증치료법.py) | &nbsp; | &nbsp; | &nbsp; |
+| 10726 | [이진수표현](SWEA/professional/2604/10726_binary_expression/10726_이진수표현.py) | &nbsp; | 1230 | [암호문3](SWEA/professional/2604/1230_password3/1230_암호문3.py) |
+| 1288 | [새로운불면증치료법](SWEA/professional/2604/1288_insomnia/1288_새로운불면증치료법.py) | &nbsp; | 13501 | [수열편집](SWEA/professional/2604/13501_sequence_edit/13501_수열편집.py) |
 
 ### Programmers
 
